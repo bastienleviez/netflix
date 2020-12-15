@@ -1,4 +1,4 @@
-# react app netflix
+# Application MyNetflix
 
 ## Scripts utiles
 
