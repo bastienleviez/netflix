@@ -16,6 +16,8 @@ lance l'application sur un serveur de dev local
 
 Build l'application en l'optimisant, l'app est prête à être déployée.
 
+## Infos utiles
+
 Nous avons utilisée la bibliothèque graphique FLUENT UI de microsoft dont voici le lien : https://developer.microsoft.com/fr-fr/fluentui#/
 
 L'application en elle même est en React JS.
