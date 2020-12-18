@@ -29,15 +29,12 @@ const listStyle = {
 
 export class ListeDesSeries extends React.Component {
 
-     _allItems;
+     
      _columns;
   
     constructor(props) {
       super(props);
   
-  
-      // Populate with items for demos.
-      this._allItems = [];
       
   
       this._columns = [
@@ -67,7 +64,8 @@ export class ListeDesSeries extends React.Component {
         erreurEpisodes: false
       };
     }
-
+    // Au moment ou le composant est appelé on déclenche une requête http pour récupérer la liste de séries ainsi que de le
+    // nombre de séries qu'elle contient
     componentDidMount() {
       fetch("https://www.devatom.net/API/api.php?data=series")
         .then(res => res.json()
@@ -87,6 +85,7 @@ export class ListeDesSeries extends React.Component {
                     }
                     let serieFormat = { styles: caseStyle ,key:serie.id, name:serie.nom, annee:serie.anneeparution, realname:serie.nomoriginal, nbreSaisons: nbreDeSaisons}
                     seriesList.push(serieFormat);
+                    //On ajoute chaque série dans la liste que l'on affichera plus tard dans un format spécifique
                   });
                 });
             })
@@ -115,6 +114,7 @@ export class ListeDesSeries extends React.Component {
         if (!this.state.isLoaded){
 
           return ( 
+            //Petit Loader pour le court temps de chargement
             <React.Fragment>
             <div className="loader"></div>
             </React.Fragment>
@@ -122,22 +122,22 @@ export class ListeDesSeries extends React.Component {
           )
         } else {
           return (
-            <React.Fragment>
-              <Panel
+            <React.Fragment> // Le composant Fragment permets de pouvoir afficher plusieurs composants ensemble
+              <Panel //Panel que l'on peut fermer en cliquant partout ailleurs
           isLightDismiss
           isOpen={this.state.affichePanelSerie}
           onDismiss={this._onDismiss}
           headerText={this.state.serieAfficheeDanslePanel ? this.state.serieAfficheeDanslePanel.nom : "Aucune série"}
           type={PanelType.medium}
         >
-          <Dropdown
+          <Dropdown //Liste des saisons d'une série
         placeholder="Choisissez une saison"
         label= {this.state.serieAfficheeDanslePanel && this.state.listeSaisonsDeLaSerie.length > 0 ? "Saisons de " + this.state.serieAfficheeDanslePanel.nom : "Pas encore de saisons pour cette série"}
         options={this.state.listeSaisonsDeLaSerie}
         onChange={(event, item) => this._getEpisodesDuneSaison(item)}
       />
           {this.state.erreurEpisodes ? (
-            <p>Aucun épisode pour cette saison</p>
+            <p>Aucun épisode pour cette saison</p>//Si il y a des épisode on les affiche sinon, on prévient qu'il n'y en a pas
           ) : (<DetailsList
                 items={this.state.listeDesEpisodesDeLaSaison}
                 columns={this._columnsEpisodes}
@@ -148,7 +148,7 @@ export class ListeDesSeries extends React.Component {
               />)}
         </Panel>
   
-              <DetailsList
+              <DetailsList //Liste des séries
                 items={this.state.items}
                 columns={this._columns}
                 setKey="set"
@@ -162,7 +162,7 @@ export class ListeDesSeries extends React.Component {
         }
     }
 
-  
+  //Lorsqu'on double clic sur une série, on charge les saisons et les épisode de la série + on affiche le panel avec toutes ces infos
     _onItemInvoked = (item) => {
       let itemFullsList = this.state.itemsFull;
       itemFullsList.forEach(iF => {
@@ -208,7 +208,7 @@ export class ListeDesSeries extends React.Component {
         listeSaisonsDeLaSerie: []
       })
     }
-
+    // On charge les épisodes d'une saison quand on selectionne une saison
     _getEpisodesDuneSaison = (item) => {
       fetch("https://www.devatom.net/API/api.php?data=episodes&idsaison=" + item.id)
       .then(res => res.text().then(result => {
